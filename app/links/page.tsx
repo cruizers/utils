@@ -40,7 +40,7 @@ export default function LinksPage() {
             Paste any text containing URLs and automatically extract all links
             for easy management
           </p>
-          <div className="w-full max-w-xl">
+          <div className="w-full max-w-2xl">
             <LinkInput
               value={inputText}
               onChange={handleTextChange}

@@ -1,125 +1,58 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Upload, Download } from "lucide-react";
-import { useImageManager, ProcessedImage } from "@/hooks/useImageManager";
-import { useUIState } from "@/hooks/useUIState";
-import { useDragAndDrop } from "@/hooks/useDragAndDrop";
-import { useFileOperations } from "@/hooks/useFileOperations";
-import { ControlPanel } from "@/components/ControlPanel";
-import { EmptyState } from "@/components/EmptyState";
-import { ImageGrid } from "@/components/ImageGrid";
-import { FullscreenModal } from "@/components/FullscreenModal";
+import { ArrowRight, Image, Link2 } from "lucide-react";
 import Link from "next/link";
 
-export default function Home() {
-  const imageManager = useImageManager();
-  const uiState = useUIState();
-  const fileOps = useFileOperations({
-    images: imageManager.images,
-    isSequential: imageManager.isSequential,
-    globalPrefix: imageManager.globalPrefix,
-    getDisplayName: imageManager.getDisplayName,
-    onFilesProcessed: imageManager.addImages,
-    setProcessing: uiState.setProcessing,
-  });
+const features = [
+  {
+    name: "Image Processor",
+    description: "Bulk rename, reorder, and download images in a flash.",
+    href: "/images",
+    icon: <Image className="w-8 h-8" />,
+  },
+  {
+    name: "Link Extractor",
+    description: "Extract, manage, and export links from any text.",
+    href: "/links",
+    icon: <Link2 className="w-8 h-8" />,
+  },
+];
 
-  const dragAndDrop = useDragAndDrop({
-    images: imageManager.images,
-    onReorder: imageManager.reorderImages,
-    onFilesProcessed: imageManager.addImages,
-    setDragOver: uiState.setDragOver,
-    setAddCardDragOver: uiState.setAddCardDragOver,
-    setProcessing: uiState.setProcessing,
-  });
-
-  if (imageManager.images.length === 0) {
-    return (
-      <EmptyState
-        isDragOver={uiState.isDragOver}
-        isProcessing={uiState.isProcessing}
-        onDragOver={dragAndDrop.handleDragOver}
-        onDragLeave={dragAndDrop.handleDragLeave}
-        onDrop={dragAndDrop.handleDrop}
-        onFileSelect={fileOps.openFileDialog}
-        fileInputRef={fileOps.fileInputRef}
-        onFileInputChange={fileOps.handleFileSelect}
-      />
-    );
-  }
-
+export default function LandingPage() {
   return (
-    <div className="min-h-screen p-6">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-2xl font-semibold mb-1">Image Processor</h1>
-            <p className="text-muted-foreground">
-              {imageManager.images.length} image
-              {imageManager.images.length !== 1 ? "s" : ""} ready for processing
-            </p>
-          </div>
-          <div className="flex gap-3">
-            <Button variant="outline" onClick={imageManager.clearAll}>
-              Clear All
-            </Button>
-            <Button onClick={fileOps.openFileDialog} variant="outline">
-              <Upload className="w-4 h-4 mr-2" />
-              Add More
-            </Button>
-            <Button
-              onClick={fileOps.downloadImages}
-              disabled={imageManager.images.length === 0}
+    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-8">
+      <div className="max-w-4xl mx-auto text-center">
+        <h1 className="text-4xl md:text-6xl font-bold tracking-tighter mb-6">
+          A Suite of Powerful Utilities
+        </h1>
+        <p className="text-lg md:text-xl text-muted-foreground mb-12 max-w-2xl mx-auto">
+          Streamline your workflow with our collection of intuitive,
+          high-performance tools. Designed for simplicity and power.
+        </p>
+
+        <div className="grid md:grid-cols-2 gap-8">
+          {features.map((feature) => (
+            <Link
+              href={feature.href}
+              key={feature.href}
+              className="bg-card p-8 rounded-xl shadow-sm hover:shadow-lg transition-shadow border border-transparent hover:border-primary/20 flex flex-col items-start text-left group"
             >
-              <Download className="w-4 h-4 mr-2" />
-              Download All
-            </Button>
-          </div>
+              <div className="p-3 bg-primary/10 rounded-full mb-4">
+                {feature.icon}
+              </div>
+              <h3 className="text-2xl font-semibold mb-3">{feature.name}</h3>
+              <p className="text-muted-foreground mb-6 flex-grow">
+                {feature.description}
+              </p>
+              <div className="flex items-center text-primary font-medium">
+                Go to {feature.name}
+                <ArrowRight className="w-4 h-4 ml-2 transform transition-transform group-hover:translate-x-1" />
+              </div>
+            </Link>
+          ))}
         </div>
-
-        <ControlPanel
-          globalPrefix={imageManager.globalPrefix}
-          setGlobalPrefix={imageManager.setGlobalPrefix}
-          isSequential={imageManager.isSequential}
-          setIsSequential={imageManager.setIsSequential}
-          onApplyGlobalPrefix={imageManager.applyGlobalPrefix}
-          onResetToOriginalNames={imageManager.resetToOriginalNames}
-        />
-
-        <ImageGrid
-          images={imageManager.images}
-          sensors={dragAndDrop.sensors}
-          onDragStart={dragAndDrop.handleDragStart}
-          onDragEnd={dragAndDrop.handleDragEnd}
-          activeImage={dragAndDrop.activeImage || null}
-          onRemove={imageManager.removeImage}
-          onNameChange={imageManager.updateImageName}
-          onFullscreen={(image: ProcessedImage) =>
-            uiState.setFullscreenImage(image)
-          }
-          getDisplayName={imageManager.getDisplayName}
-          isSequential={imageManager.isSequential}
-          onAddMoreFileSelect={fileOps.openFileDialog}
-          onAddMoreDrop={dragAndDrop.handleAddCardDrop}
-          addCardDragOver={uiState.addCardDragOver}
-          onAddMoreDragOver={dragAndDrop.handleAddCardDragOver}
-          onAddMoreDragLeave={dragAndDrop.handleAddCardDragLeave}
-        />
-
-        <FullscreenModal
-          image={uiState.fullscreenImage}
-          onClose={() => uiState.setFullscreenImage(null)}
-        />
-
-        <input
-          ref={fileOps.fileInputRef}
-          type="file"
-          multiple
-          accept="image/*"
-          onChange={fileOps.handleFileSelect}
-          className="hidden"
-        />
       </div>
     </div>
   );
 }
+

@@ -10,6 +10,7 @@ import { ControlPanel } from "@/components/ControlPanel";
 import { EmptyState } from "@/components/EmptyState";
 import { ImageGrid } from "@/components/ImageGrid";
 import { FullscreenModal } from "@/components/FullscreenModal";
+import Link from "next/link";
 
 export default function Home() {
   const imageManager = useImageManager();

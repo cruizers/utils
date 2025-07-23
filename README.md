@@ -11,6 +11,7 @@ _Useful for sound designers, game jams, etc._
 - Multiple file rename
 
 upload images or files → set a rule (prefix, suffix, find-replace, sequential) → download rename batch
+create an extension so whenever we download any image from the web we can set an alias before download it
 
 - Multiple links opener
 

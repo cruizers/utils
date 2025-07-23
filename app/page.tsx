@@ -696,54 +696,33 @@ export default function Home() {
 
         <Dialog open={!!fullscreenImage} onOpenChange={() => closeFullscreen()}>
           <DialogContent
-            className="max-w-[100vw] max-h-[100vh] w-full h-full p-0 bg-black/95 backdrop-blur-xl border-none overflow-hidden"
+            className="max-w-none max-h-none w-screen h-screen p-0 bg-transparent border-none"
             showCloseButton={false}
           >
             {fullscreenImage && (
               <div className="relative w-full h-full flex items-center justify-center">
-                {/* Background overlay that closes on click */}
                 <div
                   className="absolute inset-0 cursor-pointer"
                   onClick={closeFullscreen}
                 />
-
-                {/* Image container */}
-                <div className="relative max-w-[95vw] max-h-[95vh] flex items-center justify-center">
-                  <img
-                    src={fullscreenImage.url}
-                    alt={fullscreenImage.name}
-                    className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
-                    onClick={(e) => e.stopPropagation()}
-                  />
-                </div>
-
-                {/* Close button */}
-                <Button
+                <img
+                  src={fullscreenImage.url}
+                  alt={fullscreenImage.name}
+                  className="max-w-full max-h-full object-contain"
+                  onClick={(e) => e.stopPropagation()}
+                />
+                {/* <Button
                   variant="secondary"
                   size="icon"
-                  className="absolute top-4 right-4 bg-black/60 hover:bg-black/80 border-white/10 text-white backdrop-blur-sm"
+                  className="absolute top-4 right-4 bg-white/10 hover:bg-white/20 text-white"
                   onClick={closeFullscreen}
                 >
-                  <X className="w-5 h-5" />
-                </Button>
-
-                {/* Image info */}
+                  <X className="w-4 h-4" />
+                </Button> */}
                 <div className="absolute bottom-4 left-4 right-4 flex justify-center pointer-events-none">
-                  <div className="bg-black/70 backdrop-blur-md rounded-lg px-6 py-3 max-w-md border border-white/10">
-                    <div className="text-white font-medium text-center truncate">
+                  <div className="bg-black/80 rounded-lg px-4 py-2">
+                    <div className="text-white text-sm text-center">
                       {fullscreenImage.name}
-                    </div>
-                    <div className="text-white/60 text-sm text-center truncate mt-1">
-                      {fullscreenImage.originalName}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Keyboard hint */}
-                <div className="absolute top-4 left-4 pointer-events-none">
-                  <div className="bg-black/60 backdrop-blur-sm rounded-md px-3 py-2 border border-white/10">
-                    <div className="text-white/70 text-xs">
-                      Press ESC to close
                     </div>
                   </div>
                 </div>

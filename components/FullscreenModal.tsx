@@ -1,5 +1,6 @@
 import { useEffect } from "react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { X, Download } from "lucide-react";
 import { ProcessedImage } from "@/hooks/useImageManager";
 
 interface FullscreenModalProps {
@@ -26,34 +27,54 @@ export function FullscreenModal({ image, onClose }: FullscreenModalProps) {
     };
   }, [image, onClose]);
 
+  const handleDownload = () => {
+    if (!image) return;
+
+    const link = document.createElement("a");
+    link.href = image.url;
+    link.download = image.name;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleBackgroundClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
+  if (!image) return null;
+
   return (
-    <Dialog open={!!image} onOpenChange={onClose}>
-      <DialogContent
-        className="max-w-none max-h-none w-screen h-screen p-0 bg-transparent border-none"
-        showCloseButton={false}
+    <div
+      className="fixed inset-0 z-50 bg-black/90 p-4 flex items-center justify-center cursor-pointer"
+      onClick={handleBackgroundClick}
+    >
+      <img
+        src={image.url}
+        alt={image.name}
+        className="max-w-full max-h-full object-contain cursor-default"
+        onClick={(e) => e.stopPropagation()}
+      />
+
+      <Button
+        variant="secondary"
+        size="icon"
+        className="absolute top-6 right-6 bg-neutral-800/90 hover:bg-neutral-700 text-white border border-neutral-600 shadow-lg backdrop-blur-sm rounded-lg w-12 h-12"
+        onClick={onClose}
       >
-        {image && (
-          <div className="relative w-full h-full flex items-center justify-center">
-            <div
-              className="absolute inset-0 cursor-pointer"
-              onClick={onClose}
-            />
-            <img
-              src={image.url}
-              alt={image.name}
-              className="max-w-full max-h-full object-contain"
-              onClick={(e) => e.stopPropagation()}
-            />
-            <div className="absolute bottom-4 left-4 right-4 flex justify-center pointer-events-none">
-              <div className="bg-black/80 rounded-lg px-4 py-2">
-                <div className="text-white text-sm text-center">
-                  {image.name}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </DialogContent>
-    </Dialog>
+        <X className="w-6 h-6" />
+      </Button>
+
+      <Button
+        variant="secondary"
+        size="icon"
+        className="absolute top-6 right-20 bg-neutral-800/90 hover:bg-neutral-700 text-white border border-neutral-600 shadow-lg backdrop-blur-sm rounded-lg w-12 h-12"
+        onClick={handleDownload}
+      >
+        <Download className="w-5 h-5" />
+      </Button>
+    </div>
   );
 }
